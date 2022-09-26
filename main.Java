@@ -1,63 +1,44 @@
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.os.Bundle;
-import android.view.View;
- 
-public class MainActivity extends Activity {
- 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(new DrawView(this));
-  }
- 
-  class DrawView extends View {
- 
-    Paint p;
-    Path path;
-    Matrix matrix;
- 
-    public DrawView(Context context) {
-      super(context);
-      p = new Paint();
-      p.setStrokeWidth(3);
-      p.setStyle(Paint.Style.STROKE);
- 
-      path = new Path();
-      matrix = new Matrix();
+import java.awt.Dimension;
+import java.awt.Graphics;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+public class ShapesDrawing {
+
+    private JFrame frame;
+    private JPanel pane;
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new ShapesDrawing().createAndShowGui();
+            }
+        });
     }
- 
-    @Override
-    protected void onDraw(Canvas canvas) {
-      canvas.drawARGB(80, 102, 204, 255);
- 
-      // создаем крест в path
-      path.reset();
-      path.addRect(300, 150, 450, 200, Path.Direction.CW);
-      path.addRect(350, 100, 400, 250, Path.Direction.CW);
- 
-      // рисуем path зеленым
-      p.setColor(Color.GREEN);
-      canvas.drawPath(path, p);
- 
-      // настраиваем матрицу на перемещение на 300 вправо и 200 вниз
-      matrix.reset();
-      matrix.setTranslate(300, 200);
-       
-      // применяем матрицу к path
-      path.transform(matrix);
- 
-      // рисуем path синим
-      p.setColor(Color.BLUE);
-      canvas.drawPath(path, p);
- 
+
+    public void createAndShowGui() {
+        frame = new JFrame(getClass().getSimpleName());
+        pane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); 
+                g.drawRect(10, 10, 50, 50); //Квадрат
+                g.drawRect(10, 75, 100, 50); //Прямоугольник
+                g.drawPolygon(new int[] {35, 10, 60}, new int[] {150, 200, 200}, 3); //Треугольник
+                g.dispose();
+            }
+
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(300, 300);
+            }
+        };
+
+        frame.add(pane);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
- 
-  }
- 
 }
